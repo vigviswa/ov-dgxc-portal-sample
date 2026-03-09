@@ -53,21 +53,25 @@ async def get_nvcf_functions() -> NvcfFunctions:
         return {}
 
     logger.info("Get fresh status of NVCF functions...")
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            f"{settings.nvcf_control_endpoint}/v2/nvcf/functions",
-            headers={
-                "Authorization": f"Bearer {settings.nvcf_api_key}"
-            }
-        )
-        if response.is_success:
-            results = response.json()
-            return {
-                (function["id"], function["versionId"]): function
-                for function in results["functions"]
-            }
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                f"{settings.nvcf_control_endpoint}/v2/nvcf/functions",
+                headers={
+                    "Authorization": f"Bearer {settings.nvcf_api_key}"
+                }
+            )
+            if response.is_success:
+                results = response.json()
+                return {
+                    (function["id"], function["versionId"]): function
+                    for function in results["functions"]
+                }
 
-        logger.error(f"Failed to get NVCF functions: {response.text}")
+            logger.error(f"Failed to get NVCF functions: {response.text}")
+            return {}
+    except (httpx.TimeoutException, httpx.ConnectError) as e:
+        logger.error(f"Failed to get NVCF functions - connection error: {e}")
         return {}
 
 

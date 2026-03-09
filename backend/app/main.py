@@ -126,7 +126,7 @@ def start():
     uvicorn.run(
         "app.main:api",
         host="0.0.0.0",
-        port=8000,
+        port=8080,
         reload=False,
         ws_ping_interval=None,
         ws_ping_timeout=None,
