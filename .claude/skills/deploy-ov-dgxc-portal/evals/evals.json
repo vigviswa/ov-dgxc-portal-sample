@@ -1,0 +1,23 @@
+{
+  "skill_name": "deploy-ov-dgxc-portal",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Hey, I need to get the OV-DGXC portal running on an Ubuntu 22.04 VM. I already have nginx installed and my TLS certs are at /etc/nginx/certs/cert.pem and key.pem. My IdP is Keycloak, the realm is ovc-auth, and my portal FQDN will be https://myovc.internal.nvidia.com. NGC API key is nvapi-abc123. Walk me through the full setup.",
+      "expected_output": "A complete step-by-step guide covering: NGINX config (nginx.conf with correct proxy_pass to 8000, WebSocket upgrade headers, SSL paths), frontend build (Node.js 20, npm install, main.json with correct auth fields populated for Keycloak), backend setup (Python 3.12, Poetry, settings.toml with all required fields), and verification steps. Should reference the standalone-deployment workflow and include the actual nginx.conf template.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I'm deploying the ov-dgxc-portal on AKS. I've got my NGC API key (nvapi-xyz789), my NCA_ID is ABC123NV, and I'm using Azure Entra ID for auth — tenant ID is contoso.onmicrosoft.com, client ID is portal-app-001. My portal FQDN will be ov-portal.eastus.cloudapp.azure.com and Nucleus is at nucleus.contoso.com. I want to use Let's Encrypt for certs. Give me the full deployment steps.",
+      "expected_output": "Full AKS deployment walkthrough: Azure CLI + kubectl + helm install, managed AKS ingress setup, cert-manager + Let's Encrypt staging/prod issuer config, NGC registry docker build + push, kubectl create secret for image pull, and the complete helm upgrade --install command with all --set flags populated with the provided values (Entra metadataUri at login.microsoftonline.com/contoso.onmicrosoft.com/v2.0/.well-known/openid-configuration, correct redirectUri, NGC registry path). Should warn about using staging issuer first.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "The Point Cloud streaming team (BMW) needs a custom version of the ov-dgxc-portal with NavVis IVION authentication support. The changes are in web/src/hooks/useStream.ts in Joerg Mensmann's fork at gitlab-master.nvidia.com/jmensmann/web-streaming-example on branch custom-event-handler-omni.pointcloud.potree2-v1.4.1. We don't want to stand up a whole new cluster if we can avoid it — we already have AZ29-prd2. What are our options and what's the recommended path?",
+      "expected_output": "Should explain the 3 options (own custom portal deploy, use managed SA portal via Mitri, upstream integration with plugin hooks), with the tradeoff table. Should reference the custom-portal-deployment workflow. Should specifically cover: cherry-picking from Joerg's fork, deploying in a separate namespace on AZ29-prd2, the security warning about not exposing to internet, and contact info for Mitri Abou-Rizk. Should mention the proposed StreamHooks callback architecture for upstreaming.",
+      "files": []
+    }
+  ]
+}
